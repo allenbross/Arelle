@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mein Kalender — September 2027 bis August 2028</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2f3a;
+      --paper: #fffaf3;
+      --line: #c5d4dc;
+      --accent: #2a9d8f;
+      --accent-soft: #e8f6f3;
+      --sun: #f4a261;
+      --sky: #7eb8d4;
+      --berry: #e76f51;
+      --leaf: #52b788;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Nunito", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(126, 184, 212, 0.35), transparent 42%),
+        radial-gradient(circle at 88% 8%, rgba(244, 162, 97, 0.28), transparent 38%),
+        radial-gradient(circle at 70% 90%, rgba(82, 183, 136, 0.22), transparent 45%),
+        linear-gradient(165deg, #eef7fb 0%, #fff6ea 48%, #f3faf6 100%);
+      min-height: 100vh;
+    }
+
+    .screen-intro {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 1rem;
+      text-align: center;
+      animation: rise-in 0.7s ease-out both;
+    }
+
+    .screen-intro h1 {
+      font-family: "Fredoka", sans-serif;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      font-weight: 700;
+      margin: 0 0 0.4rem;
+      letter-spacing: 0.02em;
+      color: var(--accent);
+    }
+
+    .screen-intro p {
+      margin: 0 auto 1.25rem;
+      max-width: 36rem;
+      font-size: 1.1rem;
+      line-height: 1.45;
+    }
+
+    .print-hint {
+      display: inline-block;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.7);
+      border: 2px dashed var(--sky);
+      border-radius: 999px;
+      padding: 0.45rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .month-page {
+      width: min(210mm, 100% - 2rem);
+      margin: 1.25rem auto 2rem;
+      background: var(--paper);
+      border-radius: 18px;
+      padding: 1.4rem 1.5rem 1.6rem;
+      box-shadow: 0 10px 28px rgba(26, 47, 58, 0.12);
+      border: 3px solid color-mix(in srgb, var(--month-color) 55%, white);
+      position: relative;
+      overflow: hidden;
+      animation: rise-in 0.65s ease-out both;
+    }
+
+    .month-page::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 10px;
+      background: linear-gradient(90deg, var(--month-color), color-mix(in srgb, var(--month-color) 40%, white));
+    }
+
+    .month-page:nth-child(odd) { animation-delay: 0.05s; }
+    .month-page:nth-child(even) { animation-delay: 0.12s; }
+
+    .month-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem 1.5rem;
+      margin-bottom: 1rem;
+      padding-top: 0.35rem;
+    }
+
+    .month-title-block {
+      flex: 1 1 12rem;
+    }
+
+    .month-name {
+      font-family: "Fredoka", sans-serif;
+      font-size: clamp(1.9rem, 4.5vw, 2.6rem);
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.1;
+      color: var(--month-color);
+    }
+
+    .month-year {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0.25rem 0 0;
+      opacity: 0.75;
+    }
+
+    .name-field {
+      flex: 1 1 14rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-width: 12rem;
+    }
+
+    .name-field label {
+      font-family: "Fredoka", sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .name-line {
+      border: none;
+      border-bottom: 3px solid var(--month-color);
+      background: transparent;
+      font-family: "Nunito", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      padding: 0.35rem 0.2rem;
+      color: var(--ink);
+      width: 100%;
+    }
+
+    .name-line:focus {
+      outline: none;
+      background: color-mix(in srgb, var(--month-color) 10%, white);
+    }
+
+    .prompt {
+      margin: 0 0 0.85rem;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: color-mix(in srgb, var(--ink) 80%, var(--month-color));
+    }
+
+    .blank-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(5, minmax(3.2rem, 1fr));
+      gap: 0.35rem;
+      min-height: 18rem;
+    }
+
+    .blank-cell {
+      border: 2px dashed var(--line);
+      border-radius: 10px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9), color-mix(in srgb, var(--month-color) 6%, white));
+      min-height: 3.2rem;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .blank-cell:hover {
+      border-color: var(--month-color);
+      transform: scale(1.02);
+    }
+
+    .decor {
+      position: absolute;
+      right: 1rem;
+      bottom: 1rem;
+      width: 2.4rem;
+      height: 2.4rem;
+      opacity: 0.35;
+      pointer-events: none;
+      animation: floaty 3.5s ease-in-out infinite;
+    }
+
+    .sep { --month-color: #d97706; }
+    .okt { --month-color: #c2410c; }
+    .nov { --month-color: #7c3aed; }
+    .dez { --month-color: #0369a1; }
+    .jan { --month-color: #0e7490; }
+    .feb { --month-color: #db2777; }
+    .mar { --month-color: #16a34a; }
+    .apr { --month-color: #059669; }
+    .mai { --month-color: #65a30d; }
+    .jun { --month-color: #0284c7; }
+    .jul { --month-color: #ea580c; }
+    .aug { --month-color: #ca8a04; }
+
+    @keyframes rise-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .screen-intro,
+      .print-hint {
+        display: none !important;
+      }
+
+      .month-page {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        page-break-after: always;
+        break-after: page;
+        min-height: 270mm;
+        border-width: 2px;
+      }
+
+      .month-page:last-of-type {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      .blank-cell:hover {
+        transform: none;
+      }
+
+      .name-line {
+        border-bottom-width: 2px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .blank-grid {
+        grid-template-rows: repeat(5, minmax(2.6rem, 1fr));
+        min-height: 14rem;
+      }
+
+      .month-page {
+        padding: 1.1rem 1rem 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="screen-intro">
+    <h1>Mein Kalender</h1>
+    <p>
+      Zwölf leere Monate von September 2027 bis August 2028 — zum Ausfüllen,
+      Malen und Planen. Schreibe deinen Namen auf jedes Blatt!
+    </p>
+    <p class="print-hint">Tipp: Zum Ausdrucken Strg+P (oder Cmd+P) — ein Monat pro Seite</p>
+  </header>
+
+  <!-- September 2027 → August 2028 -->
+  <section class="month-page sep" aria-label="September 2027">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">September</h2>
+        <p class="month-year">2027</p>
+      </div>
+      <div class="name-field">
+        <label for="name-sep">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-sep" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+    <svg class="decor" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14" fill="currentColor" style="color:var(--month-color)"/><circle cx="14" cy="16" r="2" fill="#fff"/><circle cx="26" cy="16" r="2" fill="#fff"/><path d="M14 25c2 3 10 3 12 0" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </section>
+
+  <section class="month-page okt" aria-label="Oktober 2027">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">Oktober</h2>
+        <p class="month-year">2027</p>
+      </div>
+      <div class="name-field">
+        <label for="name-okt">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-okt" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page nov" aria-label="November 2027">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">November</h2>
+        <p class="month-year">2027</p>
+      </div>
+      <div class="name-field">
+        <label for="name-nov">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-nov" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page dez" aria-label="Dezember 2027">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">Dezember</h2>
+        <p class="month-year">2027</p>
+      </div>
+      <div class="name-field">
+        <label for="name-dez">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-dez" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page jan" aria-label="Januar 2028">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">Januar</h2>
+        <p class="month-year">2028</p>
+      </div>
+      <div class="name-field">
+        <label for="name-jan">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-jan" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page feb" aria-label="Februar 2028">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">Februar</h2>
+        <p class="month-year">2028</p>
+      </div>
+      <div class="name-field">
+        <label for="name-feb">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-feb" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page mar" aria-label="März 2028">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">März</h2>
+        <p class="month-year">2028</p>
+      </div>
+      <div class="name-field">
+        <label for="name-mar">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-mar" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page apr" aria-label="April 2028">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">April</h2>
+        <p class="month-year">2028</p>
+      </div>
+      <div class="name-field">
+        <label for="name-apr">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-apr" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page mai" aria-label="Mai 2028">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">Mai</h2>
+        <p class="month-year">2028</p>
+      </div>
+      <div class="name-field">
+        <label for="name-mai">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-mai" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page jun" aria-label="Juni 2028">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">Juni</h2>
+        <p class="month-year">2028</p>
+      </div>
+      <div class="name-field">
+        <label for="name-jun">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-jun" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page jul" aria-label="Juli 2028">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">Juli</h2>
+        <p class="month-year">2028</p>
+      </div>
+      <div class="name-field">
+        <label for="name-jul">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-jul" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+
+  <section class="month-page aug" aria-label="August 2028">
+    <div class="month-top">
+      <div class="month-title-block">
+        <h2 class="month-name">August</h2>
+        <p class="month-year">2028</p>
+      </div>
+      <div class="name-field">
+        <label for="name-aug">Name der Schülerin / des Schülers</label>
+        <input class="name-line" id="name-aug" type="text" autocomplete="name" placeholder="______________________________" />
+      </div>
+    </div>
+    <p class="prompt">Male oder schreibe in die Felder, was diesen Monat wichtig ist.</p>
+    <div class="blank-grid" aria-hidden="true">
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+      <div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div><div class="blank-cell"></div>
+    </div>
+  </section>
+</body>
+</html>

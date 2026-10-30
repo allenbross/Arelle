@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct FavoritesView: View {
-    @EnvironmentObject private var store: DictionaryStore
+    @EnvironmentObject private var store: LearningStore
 
     var body: some View {
         ZStack {
@@ -12,7 +12,7 @@ struct FavoritesView: View {
                     Text("No favorites yet")
                         .font(.system(.title3, design: .serif).weight(.semibold))
                         .foregroundStyle(Brand.ink)
-                    Text("Open any word and tap the star to save it here for later study.")
+                    Text("Star words while browsing, then practice them as a Favorites deck on Learn.")
                         .font(.system(.body, design: .serif))
                         .foregroundStyle(Brand.ink.opacity(0.65))
                         .multilineTextAlignment(.center)

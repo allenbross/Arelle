@@ -1,6 +1,6 @@
 # Alexa’s Deutsche Dictionary
 
-iPhone dictionary app for learning German: search German ↔ English entries, see gender/plural/examples, and save favorites for later study.
+iPhone **German word learning** app: spaced-repetition flashcards, quizzes, progress tracking, plus a searchable word reference.
 
 ## Open in Xcode
 
@@ -13,12 +13,25 @@ iPhone dictionary app for learning German: search German ↔ English entries, se
 
 Requires **iOS 17+**.
 
-## What’s in the MVP
+## What you can do
 
-- Branded home + search for German or English
-- Entry detail: article, plural, part of speech, meaning, example sentence
-- Favorites (on-device, via `AppStorage`)
-- Bundled starter lexicon (~120 high-frequency A1–A2 words) — replace/extend `Resources/dictionary.json` with your own licensed data later
+- **Learn** — pick a deck (due, new, favorites, A1, A2, all) and study with flashcards or a quiz
+- **Spaced repetition** — Again / Hard / Good / Easy scheduling saved on-device
+- **Progress** — streak, reviews today, new / learning / mastered breakdown
+- **Words** — look up German ↔ English with article, plural, examples
+- **Favorites** — star words and drill them as their own deck
+- **Pronunciation** — tap Hear / Pronounce for German speech (`AVSpeechSynthesizer`)
+
+Bundled starter lexicon: ~131 high-frequency A1–A2 words in `Resources/dictionary.json` (replace with your own licensed data later).
+
+## Tabs
+
+| Tab | Purpose |
+|---|---|
+| Learn | Decks + flashcards + quiz |
+| Progress | Mastery and streak |
+| Words | Dictionary search |
+| Favorites | Starred study list |
 
 ## Project layout
 
@@ -26,22 +39,13 @@ Requires **iOS 17+**.
 alexas-deutsche-dictionary/
 ├── AlexasDeutscheDictionary.xcodeproj
 ├── AlexasDeutscheDictionary/
-│   ├── AlexasDeutscheDictionaryApp.swift
-│   ├── ContentView.swift
-│   ├── Models/
-│   ├── Views/
-│   ├── Services/
+│   ├── Models/          # DictionaryEntry, WordProgress
+│   ├── Services/        # LearningStore, SpeechHelper
+│   ├── Views/           # Learn, flashcards, quiz, progress, words
 │   └── Resources/dictionary.json
 └── README.md
 ```
 
 ## App Store naming note
 
-“Alexa” is associated with Amazon’s voice assistant. Before App Store submission, confirm the name does not conflict with Apple’s trademark review or Amazon’s marks; a personal/family name pairing (e.g. this title) is often fine for private use, but public distribution may need legal review.
-
-## Next ideas
-
-- Import Anki/Quizlet-style flashcard decks
-- Text-to-speech pronunciation (`AVSpeechSynthesizer`)
-- Offline CEFR-tagged word lists (A1→B2)
-- Widget for “word of the day”
+“Alexa” is associated with Amazon’s voice assistant. Confirm naming before public App Store submission.

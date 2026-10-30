@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @EnvironmentObject private var store: DictionaryStore
+    @EnvironmentObject private var store: LearningStore
     @FocusState private var searchFocused: Bool
 
     var body: some View {

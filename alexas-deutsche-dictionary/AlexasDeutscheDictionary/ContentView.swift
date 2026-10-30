@@ -1,20 +1,25 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject private var store: DictionaryStore
+    @EnvironmentObject private var store: LearningStore
 
     var body: some View {
         TabView {
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "house")
+                    Label("Learn", systemImage: "book.closed")
+                }
+
+            ProgressOverviewView()
+                .tabItem {
+                    Label("Progress", systemImage: "chart.line.uptrend.xyaxis")
                 }
 
             NavigationStack {
                 SearchView()
             }
             .tabItem {
-                Label("Search", systemImage: "magnifyingglass")
+                Label("Words", systemImage: "magnifyingglass")
             }
 
             NavigationStack {
@@ -30,5 +35,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environmentObject(DictionaryStore())
+        .environmentObject(LearningStore())
 }

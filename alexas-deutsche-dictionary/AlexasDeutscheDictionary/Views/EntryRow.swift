@@ -20,10 +20,12 @@ struct EntryRow: View {
                 Text(entry.cefr)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(Brand.spruce)
-                if isFavorite {
-                    Image(systemName: "star.fill")
-                        .font(.caption)
-                        .foregroundStyle(Brand.amber)
+                HStack(spacing: 4) {
+                    if isFavorite {
+                        Image(systemName: "star.fill")
+                            .font(.caption2)
+                            .foregroundStyle(Brand.amber)
+                    }
                 }
             }
         }

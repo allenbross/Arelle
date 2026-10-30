@@ -3,6 +3,7 @@ import SwiftUI
 enum Brand {
     static let name = "Alexa’s Deutsche Dictionary"
     static let shortName = "Alexa’s"
+    static let productLine = "German word learning"
 
     /// Alpine mist → spruce ink — academic German feel without cream or purple defaults.
     static let ink = Color(red: 0.12, green: 0.18, blue: 0.20)
